@@ -1,0 +1,416 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Comprehensive Project Report: Electronic Medical Records System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2b5876;
+        }
+        h1 {
+            border-bottom: 3px solid #2b5876;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-bottom: 2px solid #4e4376;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #2b5876;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body>
+    <h1>Comprehensive Project Report: Electronic Medical Records System</h1>
+    <h1>Comprehensive Project Report: Electronic Medical Records System</h1>
+
+<h2>Table of Contents</h2>
+
+<ol>
+<li><a href="#project-overview">Project Overview</a></li>
+<li><a href="#system-architecture">System Architecture</a></li>
+<li><a href="#middleware-implementation">Middleware Implementation</a></li>
+<li><a href="#role-based-access-control-rbac">Role-Based Access Control (RBAC)</a></li>
+<li><a href="#core-components">Core Components</a></li>
+<li><a href="#security-features">Security Features</a></li>
+<li><a href="#user-experience-improvements">User Experience Improvements</a></li>
+<li><a href="#technical-documentation">Technical Documentation</a></li>
+</ol>
+
+<hr />
+
+<h2>Project Overview</h2>
+
+<p>The Electronic Medical Records System is a comprehensive healthcare management application built with a 3-tier architecture using Python and FastAPI. The system implements robust security measures through custom middleware and role-based access control to ensure data privacy and appropriate access levels for different healthcare professionals.</p>
+
+<h3>Key Features:</h3>
+
+<ul>
+<li>Patient management (registration, viewing, updating, deletion)</li>
+<li>Medical reports generation and management</li>
+<li>Prescription handling</li>
+<li>Notification system</li>
+<li>Real-time statistics dashboard</li>
+</ul>
+
+<hr />
+
+<h2>System Architecture</h2>
+
+<h3>Three-Tier Architecture (3-Tier)</h3>
+
+<h4>1. Presentation Layer</h4>
+
+<ul>
+<li><strong>Location</strong>: <code>templates/</code> directory</li>
+<li><strong>Components</strong>: HTML templates (<code>home.html</code>, <code>login.html</code>)</li>
+<li><strong>Responsibilities</strong>:
+<ul>
+<li>User interface rendering</li>
+<li>Request handling and response presentation</li>
+<li>Client-side validation and interactions</li>
+</ul></li>
+</ul>
+
+<h4>2. Business Logic Layer</h4>
+
+<ul>
+<li><strong>Location</strong>: <code>main.py</code></li>
+<li><strong>Components</strong>: API endpoints, business validation, authentication logic</li>
+<li><strong>Responsibilities</strong>:
+<ul>
+<li>Processing user requests</li>
+<li>Implementing business rules</li>
+<li>Coordinating between presentation and data layers</li>
+</ul></li>
+</ul>
+
+<h4>3. Data Layer</h4>
+
+<ul>
+<li><strong>Location</strong>: <code>main.py</code> (database functions)</li>
+<li><strong>Database</strong>: SQLite (<code>database.db</code>)</li>
+<li><strong>Components</strong>: CRUD operations, data validation</li>
+<li><strong>Responsibilities</strong>:
+<ul>
+<li>Data storage and retrieval</li>
+<li>Database connection management</li>
+<li>Transaction handling</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h2>Middleware Implementation</h2>
+
+<h3>Purpose</h3>
+
+<p>Custom middleware was developed to centralize authentication and authorization processes, providing a secure and maintainable approach to access control.</p>
+
+<h3>Key Components</h3>
+
+<h4>1. Authentication Middleware (<code>middleware/auth_middleware.py</code>)</h4>
+
+<pre><code>class AuthMiddleware:
+    """Middleware for user authentication and permission checking"""
+
+    async def __call__(self, scope, receive, send):
+        # Intercept all HTTP requests
+        # Extract user credentials from headers
+        # Store user info in request scope
+        # Continue processing or reject unauthorized requests
+</code></pre>
+
+<h4>2. Role Permissions Mapping</h4>
+
+<pre><code>ROLE_PERMISSIONS = {
+    "Doctor": {
+        "patients": ["read", "write", "update", "delete"],
+        "reports": ["read", "write"],
+        "prescriptions": ["read", "write"]
+    },
+    "Nurse": {
+        "patients": ["read"],
+        "reports": ["read"],
+        "prescriptions": []
+    },
+    "Pharmacist": {
+        "patients": ["read"],
+        "reports": [],
+        "prescriptions": ["read"]
+    }
+}
+</code></pre>
+
+<h3>Integration with FastAPI</h3>
+
+<pre><code>from middleware.auth_middleware import AuthMiddleware
+
+app = FastAPI()
+app.add_middleware(AuthMiddleware)
+</code></pre>
+
+<h3>Benefits</h3>
+
+<ul>
+<li>Centralized security management</li>
+<li>Automatic permission checking for all API endpoints</li>
+<li>Reduced code duplication</li>
+<li>Enhanced maintainability</li>
+</ul>
+
+<hr />
+
+<h2>Role-Based Access Control (RBAC)</h2>
+
+<h3>User Roles and Permissions</h3>
+
+<h4>Doctor</h4>
+
+<ul>
+<li><strong>Patients</strong>: Full access (read, write, update, delete)</li>
+<li><strong>Reports</strong>: Read and write</li>
+<li><strong>Prescriptions</strong>: Read and write</li>
+</ul>
+
+<h4>Nurse</h4>
+
+<ul>
+<li><strong>Patients</strong>: Read-only access</li>
+<li><strong>Reports</strong>: Read-only access</li>
+<li><strong>Prescriptions</strong>: No access</li>
+</ul>
+
+<h4>Pharmacist</h4>
+
+<ul>
+<li><strong>Patients</strong>: Read-only access</li>
+<li><strong>Reports</strong>: No access</li>
+<li><strong>Prescriptions</strong>: Read-only access</li>
+</ul>
+
+<h3>Implementation Details</h3>
+
+<pre><code>def check_permission(role: str, resource: str, action: str) -&gt; bool:
+    """Verify if user role has permission to perform action on resource"""
+    if role not in ROLE_PERMISSIONS:
+        return False
+    if resource not in ROLE_PERMISSIONS[role]:
+        return False
+    return action in ROLE_PERMISSIONS[role][resource]
+</code></pre>
+
+<hr />
+
+<h2>Core Components</h2>
+
+<h3>1. Main Application (<code>main.py</code>)</h3>
+
+<ul>
+<li>FastAPI application setup</li>
+<li>API endpoints for all system functionalities</li>
+<li>Database integration</li>
+<li>Middleware integration</li>
+</ul>
+
+<h3>2. Database Initialization (<code>init_db.py</code>)</h3>
+
+<ul>
+<li>Creates SQLite database tables</li>
+<li>Sets up initial user accounts</li>
+<li>Inserts sample patient data</li>
+</ul>
+
+<h3>3. HTML Templates (<code>templates/</code>)</h3>
+
+<ul>
+<li><code>home.html</code>: Main dashboard and user interface</li>
+<li><code>login.html</code>: User authentication page</li>
+</ul>
+
+<h3>4. Custom Middleware (<code>middleware/auth_middleware.py</code>)</h3>
+
+<ul>
+<li>Authentication and authorization logic</li>
+<li>Permission checking system</li>
+</ul>
+
+<hr />
+
+<h2>Security Features</h2>
+
+<h3>1. Header-Based Authentication</h3>
+
+<ul>
+<li>User role passed via <code>X-User-Role</code> header</li>
+<li>Username passed via <code>X-User-Name</code> header</li>
+<li>Automatic validation on every request</li>
+</ul>
+
+<h3>2. Centralized Permission Checking</h3>
+
+<ul>
+<li>All API endpoints protected by middleware</li>
+<li>Granular permissions per resource and action</li>
+<li>Immediate rejection of unauthorized requests</li>
+</ul>
+
+<h3>3. Role-Specific UI Elements</h3>
+
+<ul>
+<li>Interface elements dynamically shown/hidden based on user role</li>
+<li>Action buttons (edit, delete) only visible to authorized users</li>
+<li>Navigation menu customized per role</li>
+</ul>
+
+<h3>4. Data Access Control</h3>
+
+<ul>
+<li>Doctors: Full patient management</li>
+<li>Nurses: Read-only patient access</li>
+<li>Pharmacists: Patient viewing and prescription access</li>
+</ul>
+
+<hr />
+
+<h2>User Experience Improvements</h2>
+
+<h3>1. Welcome Message Enhancement</h3>
+
+<ul>
+<li>Clear welcome message showing user role and name</li>
+<li>Consistent format across all user types</li>
+<li>English-only interface for uniformity</li>
+</ul>
+
+<h3>2. Navigation Improvements</h3>
+
+<ul>
+<li>Pharmacists no longer auto-redirected to patients page</li>
+<li>Dashboard shown by default for all users</li>
+<li>Manual navigation to desired sections</li>
+</ul>
+
+<h3>3. Role-Based Interface Customization</h3>
+
+<ul>
+<li>Appropriate cards and navigation links shown per role</li>
+<li>Action buttons hidden for unauthorized users</li>
+<li>Clean, uncluttered interface per user needs</li>
+</ul>
+
+<h3>4. Responsive Design</h3>
+
+<ul>
+<li>Mobile-friendly layout</li>
+<li>Intuitive navigation</li>
+<li>Clear visual hierarchy</li>
+</ul>
+
+<hr />
+
+<h2>Technical Documentation</h2>
+
+<h3>File Structure</h3>
+
+<pre><code>project_root/
+├── main.py                 # Main application
+├── init_db.py              # Database initialization
+├── middleware/
+│   └── auth_middleware.py  # Custom middleware
+├── templates/
+│   ├── home.html           # Main dashboard
+│   └── login.html          # Login page
+├── database.db             # SQLite database
+└── documentation/
+    └── MIDDLEWARE_DOCUMENTATION_AR.md
+</code></pre>
+
+<h3>API Endpoints</h3>
+
+<ul>
+<li><code>GET /</code> - Login page</li>
+<li><code>POST /login</code> - User authentication</li>
+<li><code>GET /home</code> - Main dashboard</li>
+<li><code>GET /api/patients</code> - Retrieve patients</li>
+<li><code>POST /api/patients</code> - Create new patient</li>
+<li><code>GET /api/patients/{id}</code> - Get specific patient</li>
+<li><code>PUT /api/patients/{id}</code> - Update patient</li>
+<li><code>DELETE /api/patients/{id}</code> - Delete patient</li>
+<li><code>GET /api/reports</code> - Retrieve reports</li>
+<li><code>POST /api/reports</code> - Create new report</li>
+<li><code>GET /api/prescriptions</code> - Retrieve prescriptions</li>
+<li><code>POST /api/prescriptions</code> - Create new prescription</li>
+</ul>
+
+<h3>Running the Application</h3>
+
+<ol>
+<li>Execute <code>run_server.bat</code> or:</li>
+<li>Activate virtual environment: <code>.venv\Scripts\activate</code></li>
+<li>Initialize database: <code>python init_db.py</code></li>
+<li>Start server: <code>uvicorn main:app --reload</code></li>
+</ol>
+
+<h3>Dependencies</h3>
+
+<ul>
+<li>Python 3.x</li>
+<li>FastAPI</li>
+<li>Uvicorn</li>
+<li>SQLite (built-in)</li>
+</ul>
+
+<hr />
+
+<h2>Conclusion</h2>
+
+<p>The Electronic Medical Records System successfully implements a robust 3-tier architecture with custom middleware for role-based access control. The system provides appropriate access levels for doctors, nurses, and pharmacists while maintaining a clean, user-friendly interface. Security is centralized through the middleware implementation, ensuring consistent protection across all system components.</p>
+
+</body>
+</html>

@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التحكم الإدارية - نظام السجلات الطبية</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, #2b5876, #4e4376);
+            color: white;
+            padding: 25px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        header h1 { font-size: 28px; }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        nav a:hover { text-decoration: underline; }
+        main { max-width: 1200px; margin: 0 auto; }
+        .welcome { 
+            font-size: 24px; 
+            margin-bottom: 30px; 
+            color: #2b5876; 
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Stats Cards */
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+        }
+        .stat-card h3 {
+            color: #2b5876;
+            margin-bottom: 10px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4e4376;
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .card h2 {
+            color: #2b5876;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-left: 10px;
+            transition: 0.3s;
+        }
+        .btn-primary {
+            background: #2b5876;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #4e4376;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #2b5876;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Alert Styles */
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            display: none;
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Users Header */
+        .users-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        /* Search Box */
+        .search-box {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 300px;
+            margin-bottom: 20px;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            margin-left: 5px;
+        }
+        .tab.active {
+            background: #2b5876;
+            color: white;
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-header h2 {
+            color: #2b5876;
+        }
+        .close {
+            font-size: 28px;
+            cursor: pointer;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            nav {
+                margin-top: 15px;
+            }
+            nav a {
+                margin: 0 10px;
+            }
+            .users-header {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+            .users-header .btn {
+                margin-top: 15px;
+            }
+            .search-box {
+                width: 100%;
+            }
+            .stats-container {
+                flex-direction: column;
+            }
+            .btn {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🏥 نظام السجلات الطبية - لوحة التحكم الإدارية</h1>
+    <nav>
+        <a href="/home">🏠 الرئيسية</a>
+        <a href="/admin/users">👥 إدارة المستخدمين</a>
+        <a href="#" onclick="logout()">🔒 تسجيل الخروج</a>
+    </nav>
+</header>
+
+<main>
+    <div class="welcome" id="welcomeMessage">مرحباً بك، المدير!</div>
+    
+    <div id="alertBox" class="alert"></div>
+    
+    <!-- Statistics Cards -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <h3>👥 إجمالي المستخدمين</h3>
+            <div class="stat-value" id="totalUsers">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>👨‍⚕️ الأطباء</h3>
+            <div class="stat-value" id="doctorCount">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>👩‍⚕️ الممرضات</h3>
+            <div class="stat-value" id="nurseCount">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>💊 الصيادلة</h3>
+            <div class="stat-value" id="pharmacistCount">0</div>
+        </div>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('all')">جميع المستخدمين</div>
+        <div class="tab" onclick="showTab('doctors')">الأطباء</div>
+        <div class="tab" onclick="showTab('nurses')">الممرضات</div>
+        <div class="tab" onclick="showTab('pharmacists')">الصيادلة</div>
+    </div>
+    
+    <!-- Add/Edit User Form -->
+    <div class="card">
+        <h2 id="formTitle">➕ إضافة مستخدم جديد</h2>
+        <form id="userForm">
+            <input type="hidden" id="userId">
+            <div class="form-group">
+                <label for="username">اسم المستخدم *</label>
+                <input type="text" id="username" name="username" required placeholder="أدخل اسم المستخدم">
+            </div>
+            <div class="form-group">
+                <label for="password">كلمة المرور *</label>
+                <input type="password" id="password" name="password" required placeholder="أدخل كلمة المرور">
+            </div>
+            <div class="form-group">
+                <label for="role">الدور *</label>
+                <select id="role" name="role" required>
+                    <option value="">اختر الدور</option>
+                    <option value="Doctor">👨‍⚕️ طبيب</option>
+                    <option value="Nurse">👩‍⚕️ ممرضة</option>
+                    <option value="Pharmacist">💊 صيدلي</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitBtn">➕ إضافة مستخدم</button>
+            <button type="button" class="btn btn-warning" id="cancelBtn" onclick="cancelEdit()" style="display:none;">إلغاء</button>
+        </form>
+    </div>
+    
+    <!-- Users List -->
+    <div class="card">
+        <div class="users-header">
+            <h2>👥 مستخدمو النظام</h2>
+            <input type="text" id="searchBox" class="search-box" placeholder="🔍 البحث عن مستخدمين..." onkeyup="filterUsers()">
+        </div>
+        
+        <!-- All Users Tab -->
+        <div id="all-tab" class="tab-content active">
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>الإجراءات</th>
+                        <th>الدور</th>
+                        <th>اسم المستخدم</th>
+                        <th>المعرف</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr><td colspan="4" style="text-align:center;">جارٍ تحميل المستخدمين...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Doctors Tab -->
+        <div id="doctors-tab" class="tab-content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>الإجراءات</th>
+                        <th>اسم المستخدم</th>
+                        <th>المعرف</th>
+                    </tr>
+                </thead>
+                <tbody id="doctorsTableBody">
+                    <tr><td colspan="3" style="text-align:center;">جارٍ تحميل الأطباء...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Nurses Tab -->
+        <div id="nurses-tab" class="tab-content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>الإجراءات</th>
+                        <th>اسم المستخدم</th>
+                        <th>المعرف</th>
+                    </tr>
+                </thead>
+                <tbody id="nursesTableBody">
+                    <tr><td colspan="3" style="text-align:center;">جارٍ تحميل الممرضات...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pharmacists Tab -->
+        <div id="pharmacists-tab" class="tab-content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>الإجراءات</th>
+                        <th>اسم المستخدم</th>
+                        <th>المعرف</th>
+                    </tr>
+                </thead>
+                <tbody id="pharmacistsTableBody">
+                    <tr><td colspan="3" style="text-align:center;">جارٍ تحميل الصيادلة...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Edit User Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>تعديل المستخدم</h2>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <form id="editUserForm">
+            <input type="hidden" id="editUserId">
+            <div class="form-group">
+                <label for="editUsername">اسم المستخدم</label>
+                <input type="text" id="editUsername" readonly>
+            </div>
+            <div class="form-group">
+                <label for="editRole">الدور</label>
+                <select id="editRole" required>
+                    <option value="Doctor">👨‍⚕️ طبيب</option>
+                    <option value="Nurse">👩‍⚕️ ممرضة</option>
+                    <option value="Pharmacist">💊 صيدلي</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+            <button type="button" class="btn btn-warning" onclick="closeModal()">إلغاء</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Get user info from sessionStorage
+    const role = sessionStorage.getItem('role');
+    const username = sessionStorage.getItem('username');
+    let allUsers = [];
+    let editingUserId = null;
+    
+    // Check if user is logged in
+    if(!role || !username) {
+        alert("يرجى تسجيل الدخول أولاً!");
+        window.location.href = "/login";
+    } else {
+        document.getElementById("welcomeMessage").innerText = `مرحباً بك، ${role} ${username}!`;
+        // Load users immediately without delay
+        loadUsers();
+    }
+    
+    // Logout function
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = "/";
+    }
+    
+    // Show tab
+    function showTab(tabName) {
+        // Update tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        
+        // Show content
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+    }
+    
+    // Load users
+    async function loadUsers() {
+        try {
+            const response = await fetch('/api/admin/users', {
+                headers: {
+                    'X-User-Role': role,
+                    'X-User-Name': username
+                }
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                allUsers = data.data;
+                displayUsers(data.data);
+                updateStats(data.data);
+            } else {
+                showAlert('خطأ في تحميل المستخدمين: ' + data.message, 'error');
+            }
+        } catch (error) {
+            console.error('خطأ في تحميل المستخدمين:', error);
+            showAlert('خطأ في تحميل المستخدمين', 'error');
+        }
+    }
+    
+    // Update statistics
+    function updateStats(users) {
+        document.getElementById('totalUsers').innerText = users.length;
+        
+        const doctors = users.filter(user => user.role === 'Doctor').length;
+        const nurses = users.filter(user => user.role === 'Nurse').length;
+        const pharmacists = users.filter(user => user.role === 'Pharmacist').length;
+        
+        document.getElementById('doctorCount').innerText = doctors;
+        document.getElementById('nurseCount').innerText = nurses;
+        document.getElementById('pharmacistCount').innerText = pharmacists;
+    }
+    
+    // Display users in table
+    function displayUsers(users) {
+        const tbody = document.getElementById('usersTableBody');
+        const doctorsTbody = document.getElementById('doctorsTableBody');
+        const nursesTbody = document.getElementById('nursesTableBody');
+        const pharmacistsTbody = document.getElementById('pharmacistsTableBody');
+        
+        // Clear all tables
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">جارٍ تحميل المستخدمين...</td></tr>';
+        doctorsTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">جارٍ تحميل الأطباء...</td></tr>';
+        nursesTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">جارٍ تحميل الممرضات...</td></tr>';
+        pharmacistsTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">جارٍ تحميل الصيادلة...</td></tr>';
+        
+        if (users.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لم يتم العثور على مستخدمين</td></tr>';
+            doctorsTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">لم يتم العثور على أطباء</td></tr>';
+            nursesTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">لم يتم العثور على ممرضات</td></tr>';
+            pharmacistsTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">لم يتم العثور على صيادلة</td></tr>';
+            return;
+        }
+        
+        // All users table
+        tbody.innerHTML = '';
+        users.forEach(user => {
+            const row = `
+                <tr>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="editUser(${user.id}, '${user.username}', '${user.role}')">✏️ تعديل</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">🗑️ حذف</button>
+                    </td>
+                    <td>${user.role === 'Doctor' ? '👨‍⚕️ طبيب' : user.role === 'Nurse' ? '👩‍⚕️ ممرضة' : '💊 صيدلي'}</td>
+                    <td>${user.username}</td>
+                    <td>${user.id}</td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+        
+        // Doctors table
+        const doctors = users.filter(user => user.role === 'Doctor');
+        doctorsTbody.innerHTML = '';
+        doctors.forEach(user => {
+            const row = `
+                <tr>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="editUser(${user.id}, '${user.username}', '${user.role}')">✏️ تعديل</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">🗑️ حذف</button>
+                    </td>
+                    <td>${user.username}</td>
+                    <td>${user.id}</td>
+                </tr>
+            `;
+            doctorsTbody.innerHTML += row;
+        });
+        
+        // Nurses table
+        const nurses = users.filter(user => user.role === 'Nurse');
+        nursesTbody.innerHTML = '';
+        nurses.forEach(user => {
+            const row = `
+                <tr>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="editUser(${user.id}, '${user.username}', '${user.role}')">✏️ تعديل</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">🗑️ حذف</button>
+                    </td>
+                    <td>${user.username}</td>
+                    <td>${user.id}</td>
+                </tr>
+            `;
+            nursesTbody.innerHTML += row;
+        });
+        
+        // Pharmacists table
+        const pharmacists = users.filter(user => user.role === 'Pharmacist');
+        pharmacistsTbody.innerHTML = '';
+        pharmacists.forEach(user => {
+            const row = `
+                <tr>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="editUser(${user.id}, '${user.username}', '${user.role}')">✏️ تعديل</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">🗑️ حذف</button>
+                    </td>
+                    <td>${user.username}</td>
+                    <td>${user.id}</td>
+                </tr>
+            `;
+            pharmacistsTbody.innerHTML += row;
+        });
+        
+        // If any table is empty, show message
+        if (doctors.length === 0) {
+            doctorsTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">لم يتم العثور على أطباء</td></tr>';
+        }
+        if (nurses.length === 0) {
+            nursesTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">لم يتم العثور على ممرضات</td></tr>';
+        }
+        if (pharmacists.length === 0) {
+            pharmacistsTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">لم يتم العثور على صيادلة</td></tr>';
+        }
+    }
+    
+    // Filter users
+    function filterUsers() {
+        const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+        const filteredUsers = allUsers.filter(user => 
+            user.username.toLowerCase().includes(searchTerm)
+        );
+        displayUsers(filteredUsers);
+    }
+    
+    // Edit user
+    function editUser(userId, username, role) {
+        // Set form values
+        document.getElementById('editUserId').value = userId;
+        document.getElementById('editUsername').value = username;
+        document.getElementById('editRole').value = role;
+        
+        // Show modal
+        document.getElementById('editModal').style.display = 'flex';
+    }
+    
+    // Close modal
+    function closeModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+    
+    // Handle edit user form submission
+    document.getElementById('editUserForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const userId = document.getElementById('editUserId').value;
+        const role = document.getElementById('editRole').value;
+        
+        try {
+            const response = await fetch(`/api/admin/users/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-User-Role': role,
+                    'X-User-Name': username
+                },
+                body: JSON.stringify({ role: role })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showAlert('تم تحديث المستخدم بنجاح!', 'success');
+                closeModal();
+                loadUsers(); // Reload users list
+            } else {
+                showAlert('خطأ: ' + data.message, 'error');
+            }
+        } catch (error) {
+            console.error('خطأ في تحديث المستخدم:', error);
+            showAlert('خطأ في تحديث المستخدم', 'error');
+        }
+    });
+    
+    // Delete user
+    async function deleteUser(userId) {
+        if (!confirm('هل أنت متأكد أنك تريد حذف هذا المستخدم؟')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/admin/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-User-Role': role,
+                    'X-User-Name': username
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showAlert('تم حذف المستخدم بنجاح!', 'success');
+                loadUsers(); // Reload users list
+            } else {
+                showAlert('خطأ: ' + data.message, 'error');
+            }
+        } catch (error) {
+            console.error('خطأ في حذف المستخدم:', error);
+            showAlert('خطأ في حذف المستخدم', 'error');
+        }
+    }
+    
+    // Handle add user form submission
+    document.getElementById('userForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // If editing, update user
+        if (editingUserId) {
+            updateUser();
+            return;
+        }
+        
+        const formData = new FormData(this);
+        
+        try {
+            const response = await fetch('/api/admin/users', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-User-Role': role,
+                    'X-User-Name': username
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showAlert('تم إضافة المستخدم بنجاح!', 'success');
+                this.reset(); // Reset form
+                loadUsers(); // Reload users list
+            } else {
+                showAlert('خطأ: ' + data.message, 'error');
+            }
+        } catch (error) {
+            console.error('خطأ في إضافة المستخدم:', error);
+            showAlert('خطأ في إضافة المستخدم', 'error');
+        }
+    });
+    
+    // Prepare form for editing
+    function prepareEdit(user) {
+        editingUserId = user.id;
+        document.getElementById('userId').value = user.id;
+        document.getElementById('username').value = user.username;
+        document.getElementById('password').required = false;
+        document.getElementById('password').placeholder = "اتركه فارغاً للحفاظ على كلمة المرور الحالية";
+        document.getElementById('role').value = user.role;
+        
+        document.getElementById('formTitle').innerText = "✏️ تعديل المستخدم";
+        document.getElementById('submitBtn').innerText = "💾 حفظ التعديلات";
+        document.getElementById('cancelBtn').style.display = "inline-block";
+    }
+    
+    // Cancel editing
+    function cancelEdit() {
+        editingUserId = null;
+        document.getElementById('userForm').reset();
+        document.getElementById('userId').value = "";
+        document.getElementById('password').required = true;
+        document.getElementById('password').placeholder = "أدخل كلمة المرور";
+        document.getElementById('formTitle').innerText = "➕ إضافة مستخدم جديد";
+        document.getElementById('submitBtn').innerText = "➕ إضافة مستخدم";
+        document.getElementById('cancelBtn').style.display = "none";
+    }
+    
+    // Update user
+    async function updateUser() {
+        const userId = document.getElementById('userId').value;
+        const formData = new FormData(document.getElementById('userForm'));
+        
+        try {
+            const response = await fetch(`/api/admin/users/${userId}`, {
+                method: 'PUT',
+                body: formData,
+                headers: {
+                    'X-User-Role': role,
+                    'X-User-Name': username
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showAlert('تم تحديث المستخدم بنجاح!', 'success');
+                cancelEdit();
+                loadUsers(); // Reload users list
+            } else {
+                showAlert('خطأ: ' + data.message, 'error');
+            }
+        } catch (error) {
+            console.error('خطأ في تحديث المستخدم:', error);
+            showAlert('خطأ في تحديث المستخدم', 'error');
+        }
+    }
+    
+    // Show alert message
+    function showAlert(message, type) {
+        const alertBox = document.getElementById('alertBox');
+        alertBox.className = `alert alert-${type}`;
+        alertBox.textContent = message;
+        alertBox.style.display = 'block';
+        
+        setTimeout(() => {
+            alertBox.style.display = 'none';
+        }, 5000);
+    }
+    
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        const modal = document.getElementById('editModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>

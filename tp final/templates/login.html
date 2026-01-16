@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>System de Dossiers Medicos Electronic - Login</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #2b5876, #4e4376);
+        }
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2b5876;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2b5876;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover { background: #4e4376; }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Electronic Medical Records System</h2>
+    <p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 14px;">Login to your account</p>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<script>
+    async function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const formData = new FormData();
+        formData.append('username', username);
+        formData.append('password', password);
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Save user data
+                sessionStorage.setItem('role', data.user.role);
+                sessionStorage.setItem('username', data.user.username);
+                window.location.href = '/home';
+            } else {
+                alert(data.message || 'Wrong username or password!');
+            }
+        } catch (error) {
+            alert('Error connecting to server!');
+        }
+    }
+    // Add attribution line
+    function addAttribution() {
+        const footer = document.createElement('div');
+        footer.style.cssText = `
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 14px;
+            opacity: 0.8;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        `;
+        footer.innerHTML = 'Developed and Designed by <a href="https://www.facebook.com/abderrahman.aref" target="_blank" style="color: white; text-decoration: none; font-weight: bold;">Abderrahman Aref</a>';
+        document.body.appendChild(footer);
+    }
+
+    // Call attribution function when page loads
+    addAttribution();
+</script>
+
+</body>
+</html>
